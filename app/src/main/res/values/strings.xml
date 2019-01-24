@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">QASimulator</string>
+    <string name="action_settings">Settings</string>
+    <string name="model_name">Model Name</string>
+    <string name="trotter_number">Number of slices</string>
+    <string name="site_number">Number of sites</string>
+    <string name="register">register</string>
+    <string name="create_spin_glass_model">Create SpinGlass Model</string>
+</resources>

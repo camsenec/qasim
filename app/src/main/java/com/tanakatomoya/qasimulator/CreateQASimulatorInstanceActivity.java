@@ -20,7 +20,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CreateSpinGlassModelActivity extends AppCompatActivity {
+public class CreateQASimulatorInstanceActivity extends AppCompatActivity {
 
     String BASE_URL = "http://10.0.2.2:8888/QASimulator/";
 
@@ -53,15 +53,15 @@ public class CreateSpinGlassModelActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(TextUtils.isEmpty(text_name.getText().toString())){
-                    Toast.makeText(CreateSpinGlassModelActivity.this, "Please enter your model name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateQASimulatorInstanceActivity.this, "Please enter your model name", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(TextUtils.isEmpty(text_site.getText().toString())){
-                    Toast.makeText(CreateSpinGlassModelActivity.this, "Please enter number of sites", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateQASimulatorInstanceActivity.this, "Please enter number of sites", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if(TextUtils.isEmpty(text_trotter.getText().toString())) {
-                    Toast.makeText(CreateSpinGlassModelActivity.this, "Please enter number of slices", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateQASimulatorInstanceActivity.this, "Please enter number of slices", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -75,7 +75,7 @@ public class CreateSpinGlassModelActivity extends AppCompatActivity {
                 System.out.println("site_num : " + site_num);
 
                 //display dialog
-                final SpotsDialog waitingDialog = new SpotsDialog(CreateSpinGlassModelActivity.this);
+                final SpotsDialog waitingDialog = new SpotsDialog(CreateQASimulatorInstanceActivity.this);
                 waitingDialog.show();
                 waitingDialog.setMessage("Please waiting");
 
@@ -91,7 +91,7 @@ public class CreateSpinGlassModelActivity extends AppCompatActivity {
                                 Log.d("response", "get response");
 
                                 if(TextUtils.isEmpty(spinGLassField.getError_msg())){
-                                    Toast.makeText(CreateSpinGlassModelActivity.this, "Success!", Toast.LENGTH_SHORT);
+                                    Toast.makeText(CreateQASimulatorInstanceActivity.this, "Success!", Toast.LENGTH_SHORT);
 
                                 }
 

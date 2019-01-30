@@ -5,5 +5,10 @@
     <string name="trotter_number">Number of slices</string>
     <string name="site_number">Number of sites</string>
     <string name="register">register</string>
-    <string name="create_spin_glass_model">Create SpinGlass Model</string>
+    <string name="create_field">Create Field</string>
+    <string name="create_instance">Create Model</string>
+    <string name="reset">RESET</string>
+    <string name="load">LOAD</string>
+    <string name="save">SAVE</string>
+    <string name="solve">SOLVE</string>
 </resources>

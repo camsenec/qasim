@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.tanakatomoya.qasimulator.DrawableObject.MyLine;
 import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
+import com.tanakatomoya.qasimulator.IO.FileIO;
 import com.tanakatomoya.qasimulator.Model.SpinGlassModel;
 import com.tanakatomoya.qasimulator.Retrofit.QASimulatorAPI;
 
@@ -26,12 +28,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.tanakatomoya.qasimulator.MainActivity.EXTRA_DATA;
+
 public class CreateModelActivity extends AppCompatActivity {
 
     String BASE_URL = "http://10.0.2.2:8000/QASimulator/";
 
     ArrayList<MyTriangle> triangles;
-    private MyTriangle[][] triangles2D = new MyTriangle[100][];
+    private MyTriangle[][] triangles2D = new MyTriangle[100][100];
     private int site_num;
 
     @Override
@@ -39,8 +43,11 @@ public class CreateModelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
 
+        Gson gson = new Gson();
+
         Intent intent = getIntent();
-        triangles = (ArrayList<MyTriangle>)intent.getSerializableExtra(MainActivity.EXTRA_DATA);
+        triangles = (ArrayList<MyTriangle>)intent.getSerializableExtra(EXTRA_DATA);
+
         site_num = (int)Math.sqrt(this.triangles.size()) + 1;
 
         final MaterialEditText text_name = findViewById(R.id.nameField);
@@ -84,7 +91,11 @@ public class CreateModelActivity extends AppCompatActivity {
                 //create spinGlassField and read file(4th param)
                 searchNextTriangles();
                 mappingTrianglesToSpinGlassField();
-                String fileName = "SG.dat";
+
+                System.out.println("write");
+                FileIO fileFactory = new FileIO(CreateModelActivity.this);
+                fileFactory.writer();
+                String fileName = "SG.csv";
                 File file = new File(fileName);
 
                 //Debug
@@ -135,13 +146,14 @@ public class CreateModelActivity extends AppCompatActivity {
 
     private void mappingTrianglesToSpinGlassField(){
         MyTriangle triangle;
-        for(int siteY = 1; siteY <= site_num; siteY++){
-            for(int siteX = 1; siteX <= site_num; siteX++){
-                if(siteY*site_num + siteX <= triangles.size()) {
+        for(int siteY = 0; siteY < site_num; siteY++){
+            for(int siteX = 0; siteX < site_num; siteX++){
+                if(siteY*site_num + siteX < triangles.size()){
                     triangle = triangles.get(siteY * site_num + siteX);
                     triangle.setSiteX(siteX);
                     triangle.setSiteY(siteY);
-                    triangles2D[siteX - 1][siteY - 1] = triangle;
+                    triangles2D[siteX + 1][siteY + 1] = triangle;
+                    System.out.println(triangle);
                 }
             }
         }
@@ -149,14 +161,10 @@ public class CreateModelActivity extends AppCompatActivity {
 
     //O(9*N^2) = O(N^2)
     private void searchNextTriangles(){
-        System.out.println("size = " + triangles.size());
         for(MyTriangle searchedTriangle: this.triangles){
             for(MyTriangle triangle : this.triangles){
-                System.out.println(triangle);
                 for(MyLine searchedLine : searchedTriangle.getIncludedLines()){ //iteration : 3
-                    System.out.println(searchedLine);
                     for(MyLine line : triangle.getIncludedLines()){ //iteration : 3
-                        System.out.println(line);
                         if(line.equals(searchedLine)){
                             searchedTriangle.getNextTriangles().add(triangle);
                         }

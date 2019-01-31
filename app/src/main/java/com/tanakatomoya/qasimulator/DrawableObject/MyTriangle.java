@@ -3,7 +3,8 @@ package com.tanakatomoya.qasimulator.DrawableObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MyTriangle implements Serializable {
+public class MyTriangle implements Serializable{
+
     private int siteX;
     private int siteY;
     private int color; //0 or 1 or 2 or 3 or 4
@@ -17,6 +18,9 @@ public class MyTriangle implements Serializable {
     private ArrayList<MyTriangle> nextTriangles = new ArrayList<>();
 
     public MyTriangle(MyPointF point1, MyPointF point2, MyPointF point3) {
+        this.siteX = 0;
+        this.siteY = 0;
+        this.color = 0;
         this.point1 = point1;
         this.point2 = point2;
         this.point3 = point3;
@@ -63,9 +67,9 @@ public class MyTriangle implements Serializable {
      */
 
 
-    public void setSiteX(int siteI) { this.siteX = siteX; }
+    public void setSiteX(int siteX) { this.siteX = siteX; }
 
-    public void setSiteY(int siteJ) { this.siteY = siteY; }
+    public void setSiteY(int siteY) { this.siteY = siteY; }
 
     public int getSiteX() { return siteX; }
 

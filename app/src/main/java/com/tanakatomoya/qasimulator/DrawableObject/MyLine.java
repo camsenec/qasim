@@ -1,11 +1,13 @@
 package com.tanakatomoya.qasimulator.DrawableObject;
 
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class MyLine implements Serializable {
+public class MyLine implements Serializable{
     private final double EPS = 1e-1;
     private MyPointF point1;
     private MyPointF point2;
@@ -45,7 +47,6 @@ public class MyLine implements Serializable {
         x = -(line.c3 - this.c3) / (line.c1 - this.c1);
         y = line.c1 * x + line.c3;
 
-        //System.out.println("crosspoint:" + x + " " + y);
 
         double minX = min(this.getPoint1().getX(), this.getPoint2().getX()) + EPS;
         double maxX = max(this.getPoint1().getX(), this.getPoint2().getX()) - EPS;

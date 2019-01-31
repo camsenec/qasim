@@ -34,14 +34,13 @@ public class FileIO {
 
     /**
      * ファイルからのデータの読み込み
-     * @param context
      */
-    public void reader(Context context){
+    public void reader(){
 
 
         try {
 
-            FileInputStream fileStream = context.openFileInput(fileName);
+            FileInputStream fileStream = activity.openFileInput(fileName);
             BufferedReader br = new BufferedReader(new InputStreamReader(fileStream,"UTF-8"));
 
             System.out.println("Loading...");
@@ -68,15 +67,14 @@ public class FileIO {
 
     /**
      * ファイルへのデータの書き込み
-     * @param context
      */
 
-    public void writer(Context context){
+    public void writer(){
 
         try {
 
 
-            FileOutputStream fileStream = context.openFileOutput(fileName,Context.MODE_PRIVATE);
+            FileOutputStream fileStream = activity.openFileOutput(fileName,Context.MODE_PRIVATE);
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(fileStream,"UTF-8"));
 
             //ファイルへのデータの書き込み
@@ -93,7 +91,15 @@ public class FileIO {
                     }
 
                     pw.write(String.format(Locale.US,
-                            "%d\t%d\t%d\t%d\t%f",
+                            "%d,%d,%d,%d,%f",
+                            triangleI.getSiteX(),
+                            triangleI.getSiteY(),
+                            triangleJ.getSiteX(),
+                            triangleJ.getSiteY(),
+                            JCoupling
+                    ));
+                    System.out.println(String.format(Locale.US,
+                            "%d,%d,%d,%d,%f",
                             triangleI.getSiteX(),
                             triangleI.getSiteY(),
                             triangleJ.getSiteX(),

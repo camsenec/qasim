@@ -23,10 +23,10 @@ public class CreateFieldView extends View{
      * points : ユーザが入力した点のリスト
      * lines : 2点によって生成される線のリスト
      * triangles : 3点によって生成される三角形のリスト
+     * trianglesForFT : 3点によって生成される三角形のリスト(ファイル転送用)
      * iteration_num : フラクタル生成回数
      */
-    private ArrayList<MyPointF> points = new ArrayList<>();
-    private ArrayList<MyLine> lines = new ArrayList<>();
+
     private ArrayList<MyTriangle> triangles = new ArrayList<>();
     private int iteration_num = 3;
 
@@ -125,6 +125,8 @@ public class CreateFieldView extends View{
     }
 
     private void initializeField(){
+        triangles.clear();
+
         float minX = 20;
         float maxX = this.width - 20;
         float minY = 20;
@@ -167,9 +169,8 @@ public class CreateFieldView extends View{
         }
 
         triangles.clear();
-        for(MyTriangle triangle : tmpTriangles){
-            triangles.add(triangle);
-        }
+        triangles.addAll(tmpTriangles);
+
 
     }
 
@@ -183,8 +184,6 @@ public class CreateFieldView extends View{
      * resetボタンが押されたときの処理
      */
     public void reset(){
-        points.clear();
-        lines.clear();
         triangles.clear();
         invalidate();
     }
@@ -193,7 +192,6 @@ public class CreateFieldView extends View{
     /**
      * getter and setter
      */
-    public ArrayList<MyPointF> getPoints(){ return this.points; }
 
     public void setWidth(float width) { this.width = width; }
 
@@ -202,6 +200,8 @@ public class CreateFieldView extends View{
     public ArrayList<MyTriangle> getTriangles() { return triangles; }
 
     public void setCompleteFlag(int completeFlag) { this.completeFlag = completeFlag;}
+
+
 
     /**
      * Method for custom input

@@ -7,8 +7,8 @@ import java.io.Serializable;
  * (PointFを継承すると, 座標x,yがオブジェクト並列化されなかったため, PointFの継承は行っていない)
  */
 
-public class MyPointF implements Serializable {
-    private static final long serialVersionUID = -455530706921004893L;
+public class MyPointF implements Serializable{
+
 
     private float x;
     private float y;

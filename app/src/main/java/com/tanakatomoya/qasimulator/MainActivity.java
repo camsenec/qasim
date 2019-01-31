@@ -10,8 +10,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tanakatomoya.qasimulator.DrawableObject.MyPointF;
+import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String EXTRA_DATA
+            = "com.example.tanakatomoya.QASimulator.EXTRA_DATA";;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     public void createQASimulatorInstance(View view){
         // Do something in response to button
         Intent intent = new Intent(MainActivity.this, CreateModelActivity.class);
+        CreateFieldView v = findViewById(R.id.createFieldView);
+        ArrayList<MyTriangle> triangles = v.getTriangles();
+        intent.putExtra(EXTRA_DATA, triangles);
         startActivity(intent);
     }
 

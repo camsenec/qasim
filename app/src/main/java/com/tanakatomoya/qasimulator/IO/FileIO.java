@@ -2,6 +2,7 @@ package com.tanakatomoya.qasimulator.IO;
 
 import android.content.Context;
 
+import com.tanakatomoya.qasimulator.CreateModelActivity;
 import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
 import com.tanakatomoya.qasimulator.CreateFieldView;
 
@@ -24,10 +25,10 @@ public class FileIO {
      * customView : モデルを参照する先のビュー
      */
     String fileName = "SG.csv";
-    CreateFieldView view;
+    CreateModelActivity activity;
 
-    public FileIO(CreateFieldView view){
-        this.view = view;
+    public FileIO(CreateModelActivity activity){
+        this.activity = activity;
     }
 
 
@@ -46,7 +47,7 @@ public class FileIO {
             System.out.println("Loading...");
 
             String line;
-            MyTriangle[][] triangles2D = view.getTriangles2D();
+            MyTriangle[][] triangles2D = activity.getTriangles2D();
 
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(" ", -1);
@@ -79,7 +80,7 @@ public class FileIO {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(fileStream,"UTF-8"));
 
             //ファイルへのデータの書き込み
-            List<MyTriangle> triangles = view.getTriangles();
+            List<MyTriangle> triangles = activity.getTriangles();
 
             System.out.println("Saving...");
             float JCoupling;

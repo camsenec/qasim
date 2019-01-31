@@ -14,7 +14,6 @@ import com.tanakatomoya.qasimulator.DrawableObject.MyPointF;
 import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CreateFieldView extends View{
     public final float radius = 10;
@@ -26,10 +25,9 @@ public class CreateFieldView extends View{
      * triangles : 3点によって生成される三角形のリスト
      * iteration_num : フラクタル生成回数
      */
-    private List<MyPointF> points = new ArrayList<>();
-    private List<MyLine> lines = new ArrayList<>();
-    private List<MyTriangle> triangles = new ArrayList<>();
-    private MyTriangle[][] triangles2D = new MyTriangle[100][];
+    private ArrayList<MyPointF> points = new ArrayList<>();
+    private ArrayList<MyLine> lines = new ArrayList<>();
+    private ArrayList<MyTriangle> triangles = new ArrayList<>();
     private int iteration_num = 3;
 
     /**
@@ -53,7 +51,6 @@ public class CreateFieldView extends View{
     /**
      * params(for spinGlass Model)
      */
-    private int site_num;
     private int completeFlag = 0;
 
 
@@ -77,15 +74,16 @@ public class CreateFieldView extends View{
     @Override
     protected void onDraw(Canvas canvas) {
 
-        for(MyPointF point : this.points){
-            canvas.drawCircle(point.getX(), point.getY(), radius, paintOfPoint);
-        }
 
         if(this.completeFlag == 0) {
             for (MyTriangle triangle : this.triangles) {
                 for (MyLine line : triangle.getIncludedLines()) {
                     canvas.drawLine(line.getPoint1().getX(), line.getPoint1().getY(),
                             line.getPoint2().getX(), line.getPoint2().getY(), paintOfLine);
+                }
+
+                for(MyPointF point : triangle.getIncludedPoints()){
+                    canvas.drawCircle(point.getX(), point.getY(), radius, paintOfPoint);
                 }
             }
         }else{
@@ -116,41 +114,6 @@ public class CreateFieldView extends View{
 
         }
 
-    }
-
-
-    public void mappingTrianglesToSpinGlassField(){
-        site_num = (int)Math.sqrt(this.triangles.size()) + 1;
-        MyTriangle triangle;
-        for(int siteY = 1; siteY <= site_num; siteY++){
-            for(int siteX = 1; siteX <= site_num; siteX++){
-                if(siteY*site_num + siteX <= triangles.size()) {
-                    triangle = triangles.get(siteY * site_num + siteX);
-                    triangle.setSiteX(siteX);
-                    triangle.setSiteY(siteY);
-                    triangles2D[siteX - 1][siteY - 1] = triangle;
-                }
-            }
-        }
-    }
-
-    //O(9*N^2) = O(N^2)
-    public void searchNextTriangles(){
-        System.out.println("size = " + triangles.size());
-        for(MyTriangle searchedTriangle: this.triangles){
-            for(MyTriangle triangle : this.triangles){
-                System.out.println(triangle);
-                for(MyLine searchedLine : searchedTriangle.getIncludedLines()){ //iteration : 3
-                    System.out.println(searchedLine);
-                  for(MyLine line : triangle.getIncludedLines()){ //iteration : 3
-                      System.out.println(line);
-                      if(line.equals(searchedLine)){
-                            searchedTriangle.getNextTriangles().add(triangle);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public void createField(){
@@ -194,11 +157,6 @@ public class CreateFieldView extends View{
             MyPointF point2 = triangle.getPoint2();
             MyPointF point3 = triangle.getPoint3();
 
-            points.add(center);
-            points.add(point1);
-            points.add(point2);
-            points.add(point3);
-
             MyTriangle triangle1 = new MyTriangle(center, point1, point2);
             MyTriangle triangle2 = new MyTriangle(center, point2, point3);
             MyTriangle triangle3 = new MyTriangle(center, point1, point3);
@@ -206,7 +164,6 @@ public class CreateFieldView extends View{
             tmpTriangles.add(triangle1);
             tmpTriangles.add(triangle2);
             tmpTriangles.add(triangle3);
-
         }
 
         triangles.clear();
@@ -236,17 +193,13 @@ public class CreateFieldView extends View{
     /**
      * getter and setter
      */
-    public List<MyPointF> getPoints(){ return this.points; }
+    public ArrayList<MyPointF> getPoints(){ return this.points; }
 
     public void setWidth(float width) { this.width = width; }
 
     public void setHeight(float height) { this.height = height; }
 
-    public int getSite_num() { return site_num; }
-
-    public List<MyTriangle> getTriangles() { return triangles; }
-
-    public MyTriangle[][] getTriangles2D() { return triangles2D; }
+    public ArrayList<MyTriangle> getTriangles() { return triangles; }
 
     public void setCompleteFlag(int completeFlag) { this.completeFlag = completeFlag;}
 

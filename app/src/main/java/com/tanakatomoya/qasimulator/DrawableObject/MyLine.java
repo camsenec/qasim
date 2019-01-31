@@ -1,9 +1,11 @@
 package com.tanakatomoya.qasimulator.DrawableObject;
 
+import java.io.Serializable;
+
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class MyLine {
+public class MyLine implements Serializable {
     private final double EPS = 1e-1;
     private MyPointF point1;
     private MyPointF point2;

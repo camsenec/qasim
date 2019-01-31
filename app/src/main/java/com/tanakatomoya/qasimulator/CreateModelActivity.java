@@ -1,21 +1,22 @@
 package com.tanakatomoya.qasimulator;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.tanakatomoya.qasimulator.DrawableObject.MyLine;
+import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
 import com.tanakatomoya.qasimulator.Model.SpinGlassModel;
 import com.tanakatomoya.qasimulator.Retrofit.QASimulatorAPI;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import dmax.dialog.SpotsDialog;
 import okhttp3.OkHttpClient;
@@ -29,18 +30,22 @@ public class CreateModelActivity extends AppCompatActivity {
 
     String BASE_URL = "http://10.0.2.2:8000/QASimulator/";
 
+    ArrayList<MyTriangle> triangles;
+    private MyTriangle[][] triangles2D = new MyTriangle[100][];
+    private int site_num;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
 
-        //Resource
+        Intent intent = getIntent();
+        triangles = (ArrayList<MyTriangle>)intent.getSerializableExtra(MainActivity.EXTRA_DATA);
+        site_num = (int)Math.sqrt(this.triangles.size()) + 1;
+
         final MaterialEditText text_name = findViewById(R.id.nameField);
         final MaterialEditText text_trotter = findViewById(R.id.trotterNumField);
-        final Button btn_register = (Button) findViewById(R.id.btn_register);
-
-        final CreateFieldView view = findViewById(R.id.createFieldView);
-
+        final Button btn_register = findViewById(R.id.btn_register);
 
         //Build Retrofit
         OkHttpClient client = new OkHttpClient();
@@ -77,8 +82,8 @@ public class CreateModelActivity extends AppCompatActivity {
                 String trotter_num = text_trotter.getText().toString();
 
                 //create spinGlassField and read file(4th param)
-                view.searchNextTriangles();
-                view.mappingTrianglesToSpinGlassField();
+                searchNextTriangles();
+                mappingTrianglesToSpinGlassField();
                 String fileName = "SG.dat";
                 File file = new File(fileName);
 
@@ -95,7 +100,7 @@ public class CreateModelActivity extends AppCompatActivity {
                 //register to database(name,site_num,trotter_num,result,file) as multipart/form-data
                 service.createSpinGlassModel(text_name.getText().toString(),
                         Integer.parseInt(trotter_num),
-                        view.getSite_num(),
+                        site_num,
                         0,
                         file)
                         .enqueue(new Callback<SpinGlassModel>(){
@@ -126,5 +131,46 @@ public class CreateModelActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void mappingTrianglesToSpinGlassField(){
+        MyTriangle triangle;
+        for(int siteY = 1; siteY <= site_num; siteY++){
+            for(int siteX = 1; siteX <= site_num; siteX++){
+                if(siteY*site_num + siteX <= triangles.size()) {
+                    triangle = triangles.get(siteY * site_num + siteX);
+                    triangle.setSiteX(siteX);
+                    triangle.setSiteY(siteY);
+                    triangles2D[siteX - 1][siteY - 1] = triangle;
+                }
+            }
+        }
+    }
+
+    //O(9*N^2) = O(N^2)
+    private void searchNextTriangles(){
+        System.out.println("size = " + triangles.size());
+        for(MyTriangle searchedTriangle: this.triangles){
+            for(MyTriangle triangle : this.triangles){
+                System.out.println(triangle);
+                for(MyLine searchedLine : searchedTriangle.getIncludedLines()){ //iteration : 3
+                    System.out.println(searchedLine);
+                    for(MyLine line : triangle.getIncludedLines()){ //iteration : 3
+                        System.out.println(line);
+                        if(line.equals(searchedLine)){
+                            searchedTriangle.getNextTriangles().add(triangle);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public MyTriangle[][] getTriangles2D() {
+        return triangles2D;
+    }
+
+    public ArrayList<MyTriangle> getTriangles() {
+        return triangles;
     }
 }

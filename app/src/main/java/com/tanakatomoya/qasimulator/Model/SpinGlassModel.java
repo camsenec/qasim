@@ -1,16 +1,22 @@
 package com.tanakatomoya.qasimulator.Model;
 
+import java.io.File;
+
 public class SpinGlassModel {
     String name;
     int trotter_num;
     int site_num;
+    float result;
+    File file;
     String error_msg;
 
 
-    public SpinGlassModel(String name, int trotter_num, int site_num) {
+    public SpinGlassModel(String name, int trotter_num, int site_num, float result, File file) {
         this.name = name;
         this.trotter_num = trotter_num;
         this.site_num = site_num;
+        this.result = result;
+        this.file = file;
     }
 
     public String getName() {

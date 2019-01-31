@@ -28,16 +28,6 @@
                 android:hint="@string/model_name"
                 app:met_floatingLabel="highlight"/>
 
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/siteNumField"
-                android:textSize="18sp"
-                android:inputType = "text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/trotter_number"
-                app:met_floatingLabel="highlight"/>
-
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/trotterNumField"
                 android:textSize="18sp"

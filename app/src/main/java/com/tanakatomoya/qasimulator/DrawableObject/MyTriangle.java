@@ -5,15 +5,13 @@ import java.util.ArrayList;
 public class MyTriangle {
     private int siteX;
     private int siteY;
+    private int color; //0 or 1 or 2 or 3 or 4
 
     private MyPointF point1;
     private MyPointF point2;
     private MyPointF point3;
     private ArrayList<MyLine> includedLines = new ArrayList<>();
     private ArrayList<MyTriangle> nextTriangles = new ArrayList<>();
-
-    private ArrayList<Integer> colorProperty = new ArrayList<>();
-
 
     public MyTriangle(MyPointF point1, MyPointF point2, MyPointF point3) {
         this.point1 = point1;
@@ -41,6 +39,15 @@ public class MyTriangle {
         centerPoint.setY((point1.getY() + point2.getY() + point3.getY()) / 3);
 
         return centerPoint;
+    }
+
+    @Override
+    public String toString() {
+        return "MyTriangle{" +
+                "point1=" + point1.toString() +
+                ", point2=" + point2.toString() +
+                ", point3=" + point3.toString() +
+                '}';
     }
 
     /**
@@ -74,6 +81,10 @@ public class MyTriangle {
     }
 
     public ArrayList<MyLine> getIncludedLines() { return includedLines; }
+
+    public void setColor(int color) { this.color = color; }
+
+    public int getColor() { return color; }
 
     /*
     //judge if triangle include a line

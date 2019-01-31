@@ -22,9 +22,12 @@ public class MyPointF implements Serializable {
         this.setY(y);
     }
 
+
     @Override
     public String toString() {
-        return String.format("x: %f, y : %f",this.x, this.y);
+        return "x=" + x +
+                ", y=" + y +
+                '}';
     }
 
     public void setX(float x){

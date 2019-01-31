@@ -60,6 +60,14 @@ public class MyLine {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "MyLine{" +
+                "point1=" + point1.toString() +
+                ", point2=" + point2.toString() +
+                '}';
+    }
+
     /**
      * getter and setter
      */

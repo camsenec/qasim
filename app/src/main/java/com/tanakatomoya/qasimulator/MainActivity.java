@@ -2,6 +2,7 @@ package com.tanakatomoya.qasimulator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -43,26 +44,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void reset(View view){
-        FieldCreateView v = findViewById(R.id.fieldCreateView);
+        CreateFieldView v = findViewById(R.id.createFieldView);
         v.reset();
     }
 
     public void createField(View view){
-        FieldCreateView v = findViewById(R.id.fieldCreateView);
+        CreateFieldView v = findViewById(R.id.createFieldView);
         v.createField();
     }
 
     public void createQASimulatorInstance(View view){
         // Do something in response to button
-        Intent intent = new Intent(MainActivity.this, CreateQASimulatorInstanceActivity.class);
+        Intent intent = new Intent(MainActivity.this, CreateModelActivity.class);
         startActivity(intent);
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        FieldCreateView r = (FieldCreateView) findViewById(R.id.fieldCreateView);
-        MyPointF view = FieldCreateView.getViewSize(r);
+        CreateFieldView r = (CreateFieldView) findViewById(R.id.createFieldView);
+        MyPointF view = CreateFieldView.getViewSize(r);
 
         r.setWidth(view.getX());
         r.setHeight(view.getY());

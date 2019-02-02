@@ -49,7 +49,7 @@ public class FileIO {
             MyTriangle[][] triangles2D = activity.getTriangles2D();
 
             while ((line = br.readLine()) != null) {
-                String[] data = line.split(" ", -1);
+                String[] data = line.split(",", -1);
                 int siteI = Integer.parseInt(data[0]);
                 int siteJ = Integer.parseInt(data[1]);
                 int siteK = Integer.parseInt(data[2]);
@@ -82,6 +82,7 @@ public class FileIO {
 
             System.out.println("Saving...");
             float JCoupling;
+
             for(MyTriangle triangleI : triangles){
                 for(MyTriangle triangleJ : triangles){
                     if(triangleI.getNextTriangles().contains(triangleJ)) {
@@ -90,22 +91,25 @@ public class FileIO {
                         JCoupling = 0;
                     }
 
-                    pw.write(String.format(Locale.US,
-                            "%d,%d,%d,%d,%f",
-                            triangleI.getSiteX(),
-                            triangleI.getSiteY(),
-                            triangleJ.getSiteX(),
-                            triangleJ.getSiteY(),
-                            JCoupling
-                    ));
-                    System.out.println(String.format(Locale.US,
-                            "%d,%d,%d,%d,%f",
-                            triangleI.getSiteX(),
-                            triangleI.getSiteY(),
-                            triangleJ.getSiteX(),
-                            triangleJ.getSiteY(),
-                            JCoupling
-                    ));
+                    if(!triangleI.equals(triangleJ)) {
+
+                        pw.write(String.format(Locale.US,
+                                "%d,%d,%d,%d,%f",
+                                triangleI.getSiteX(),
+                                triangleI.getSiteY(),
+                                triangleJ.getSiteX(),
+                                triangleJ.getSiteY(),
+                                JCoupling
+                        ));
+                        System.out.println(String.format(Locale.US,
+                                "%d,%d,%d,%d,%f",
+                                triangleI.getSiteX(),
+                                triangleI.getSiteY(),
+                                triangleJ.getSiteX(),
+                                triangleJ.getSiteY(),
+                                JCoupling
+                        ));
+                    }
                 }
             }
 

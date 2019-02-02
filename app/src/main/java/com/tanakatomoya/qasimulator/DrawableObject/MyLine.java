@@ -64,6 +64,17 @@ public class MyLine implements Serializable{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if(obj == null) return false;
+        MyLine other = (MyLine)obj;
+        if(point1.equals(other.getPoint1()) && point2.equals(other.getPoint2()) ||
+                point1.equals(other.getPoint2()) && point2.equals(other.getPoint1())){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "MyLine{" +
                 "point1=" + point1.toString() +

@@ -54,6 +54,8 @@ public class CreateModelActivity extends AppCompatActivity {
         final MaterialEditText text_trotter = findViewById(R.id.trotterNumField);
         final Button btn_register = findViewById(R.id.btn_register);
 
+        System.out.println("size : " + triangles.size());
+
         //Build Retrofit
         OkHttpClient client = new OkHttpClient();
 
@@ -75,68 +77,72 @@ public class CreateModelActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                if(TextUtils.isEmpty(text_name.getText().toString())){
-                    Toast.makeText(CreateModelActivity.this, "Please enter your model name", Toast.LENGTH_SHORT).show();
-                    return;
+        if(TextUtils.isEmpty(text_name.getText().toString())){
+            Toast.makeText(CreateModelActivity.this,
+                    "Please enter your model name", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(TextUtils.isEmpty(text_trotter.getText().toString())) {
+            Toast.makeText(CreateModelActivity.this,
+                    "Please enter number of slices", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        //convert trotter_num to String(2nd param)
+        String trotter_num = text_trotter.getText().toString();
+
+        //create spinGlassField and read file(4th param)
+        searchNextTriangles();
+        mappingTrianglesToSpinGlassField();
+
+        System.out.println("write");
+        FileIO fileFactory = new FileIO(CreateModelActivity.this);
+        fileFactory.writer();
+        String fileName = "SG.csv";
+        File file = new File(fileName);
+
+        //Debug
+        System.out.println("name : " + text_name.getText().toString());
+        System.out.println("trotter_num : " + trotter_num);
+
+
+        final SpotsDialog waitingDialog = new SpotsDialog(CreateModelActivity.this);
+        waitingDialog.show();
+        waitingDialog.setMessage("Please waiting");
+
+
+        //register to database(name,site_num,trotter_num,result,file) as multipart/form-data
+        service.createSpinGlassModel(text_name.getText().toString(),
+            Integer.parseInt(trotter_num),
+            site_num,
+            0,
+            file)
+            .enqueue(new Callback<SpinGlassModel>(){
+                @Override
+                public void onResponse(Call<SpinGlassModel> call,
+                                       Response<SpinGlassModel> response) {
+                    //waitingDialog.dismiss();
+                    SpinGlassModel spinGLassField = response.body();
+                    Log.d("response", "get response");
+
+
+                    if(TextUtils.isEmpty(spinGLassField.getError_msg())){
+                        Toast.makeText(CreateModelActivity.this,
+                                "Success!", Toast.LENGTH_SHORT);
+
+                    }
+
+
                 }
-                if(TextUtils.isEmpty(text_trotter.getText().toString())) {
-                    Toast.makeText(CreateModelActivity.this, "Please enter number of slices", Toast.LENGTH_SHORT).show();
-                    return;
+
+                @Override
+                public void onFailure(Call<SpinGlassModel> call, Throwable t) {
+                    //waitingDialog.dismiss();
+                    Log.d("error",t.getMessage());
+
                 }
-
-
-                //convert trotter_num to String(2nd param)
-                String trotter_num = text_trotter.getText().toString();
-
-                //create spinGlassField and read file(4th param)
-                searchNextTriangles();
-                mappingTrianglesToSpinGlassField();
-
-                System.out.println("write");
-                FileIO fileFactory = new FileIO(CreateModelActivity.this);
-                fileFactory.writer();
-                String fileName = "SG.csv";
-                File file = new File(fileName);
-
-                //Debug
-                System.out.println("name : " + text_name.getText().toString());
-                System.out.println("trotter_num : " + trotter_num);
-
-
-                final SpotsDialog waitingDialog = new SpotsDialog(CreateModelActivity.this);
-                waitingDialog.show();
-                waitingDialog.setMessage("Please waiting");
-
-
-                //register to database(name,site_num,trotter_num,result,file) as multipart/form-data
-                service.createSpinGlassModel(text_name.getText().toString(),
-                        Integer.parseInt(trotter_num),
-                        site_num,
-                        0,
-                        file)
-                        .enqueue(new Callback<SpinGlassModel>(){
-                            @Override
-                            public void onResponse(Call<SpinGlassModel> call, Response<SpinGlassModel> response) {
-                                //waitingDialog.dismiss();
-                                SpinGlassModel spinGLassField = response.body();
-                                Log.d("response", "get response");
-
-
-                                if(TextUtils.isEmpty(spinGLassField.getError_msg())){
-                                    Toast.makeText(CreateModelActivity.this, "Success!", Toast.LENGTH_SHORT);
-
-                                }
-
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<SpinGlassModel> call, Throwable t) {
-                                //waitingDialog.dismiss();
-                                Log.d("error",t.getMessage());
-
-                            }
-                        });
+            });
 
 
             }
@@ -150,8 +156,8 @@ public class CreateModelActivity extends AppCompatActivity {
             for(int siteX = 0; siteX < site_num; siteX++){
                 if(siteY*site_num + siteX < triangles.size()){
                     triangle = triangles.get(siteY * site_num + siteX);
-                    triangle.setSiteX(siteX);
-                    triangle.setSiteY(siteY);
+                    triangle.setSiteX(siteX + 1);
+                    triangle.setSiteY(siteY + 1);
                     triangles2D[siteX + 1][siteY + 1] = triangle;
                     System.out.println(triangle);
                 }
@@ -165,7 +171,7 @@ public class CreateModelActivity extends AppCompatActivity {
             for(MyTriangle triangle : this.triangles){
                 for(MyLine searchedLine : searchedTriangle.getIncludedLines()){ //iteration : 3
                     for(MyLine line : triangle.getIncludedLines()){ //iteration : 3
-                        if(line.equals(searchedLine)){
+                        if(line.equals(searchedLine) && !searchedTriangle.equals(triangle)){
                             searchedTriangle.getNextTriangles().add(triangle);
                         }
                     }

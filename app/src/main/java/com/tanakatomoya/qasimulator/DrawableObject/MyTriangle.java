@@ -53,6 +53,19 @@ public class MyTriangle implements Serializable{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        MyTriangle other = (MyTriangle)obj;
+
+        if((((point1.equals(other.getPoint1()) || point1.equals(other.getPoint2()))|| point1.equals(other.getPoint3()))
+        &&(((point2.equals(other.getPoint1()) || point2.equals(other.getPoint2()))|| point2.equals(other.getPoint3()))))
+        &&((point2.equals(other.getPoint1()) || point2.equals(other.getPoint2() )|| point2.equals(other.getPoint3())))){
+            return true;
+        }
+        return false;
+
+    }
+
+    @Override
     public String toString() {
         return "MyTriangle{" +
                 "point1=" + point1.toString() +

@@ -1,4 +1,4 @@
-package com.tanakatomoya.qasimulator;
+package com.tanakatomoya.qasimulator.View;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,7 +15,7 @@ import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
 
 import java.util.ArrayList;
 
-public class CreateFieldView extends View{
+public class FieldView extends View{
     public final float radius = 10;
 
     /**
@@ -28,7 +28,6 @@ public class CreateFieldView extends View{
      */
 
     private ArrayList<MyTriangle> triangles = new ArrayList<>();
-    private int iteration_num = 2;
 
     /**
      * params(paint)
@@ -48,16 +47,11 @@ public class CreateFieldView extends View{
     private float width;
     private float height;
 
-    /**
-     * params(for spinGlass Model)
-     */
-    private int completeFlag = 0;
-
 
     /**
      * コンストラクタ
      **/
-    public CreateFieldView(Context context, @Nullable AttributeSet attrs) {
+    public FieldView(Context context, @Nullable AttributeSet attrs) {
         super(context ,attrs);
         paintOfPoint = new Paint();
         paintOfLine = new Paint();
@@ -116,15 +110,26 @@ public class CreateFieldView extends View{
     }
 
     /**
+     * RESETボタンが押されたときの処理
+     */
+    public void reset(){
+        triangles.clear();
+        invalidate();
+    }
+
+    /**
+     * CREATE FIELDボタンが押されたときの処理
      * 塗りつぶす三角形を生成
      * used : initializeField(), createFractal()
      */
-    public void createField(){
+    public void createField(int iterationNum){
         initializeField();
-        for(int i = 0 ; i < this.iteration_num; i++){
+        System.out.println(iterationNum);
+        for(int i = 0 ; i < iterationNum; i++){
             createFractal();
             invalidate();
         }
+
     }
 
     //windowの角のうちの2点と中央を頂点とする, 4つの三角形を生成
@@ -185,52 +190,19 @@ public class CreateFieldView extends View{
         return point;
     }
 
-
     /**
-     * resetボタンが押されたときの処理
-     */
-    public void reset(){
-        triangles.clear();
-        invalidate();
-    }
-
-
-    /**
-     * getter and setter
+     * static functions
      */
 
-    public void setWidth(float width) { this.width = width; }
 
-    public void setHeight(float height) { this.height = height; }
-
-    public ArrayList<MyTriangle> getTriangles() {
-        System.out.println("inneersize"  + triangles.size());
-        return this.triangles;
-    }
-
-    public void setTriangles(ArrayList<MyTriangle> triangles) {
-        this.triangles = triangles;
-        invalidate();
-    }
-
-    public void setCompleteFlag(int completeFlag) { this.completeFlag = completeFlag;}
-
-
-
-    /**
-     * Method for custom input
-     * registerLineAndTriangle
-     * searchMinLine
-     * searchTriangleIncludingLine
-     */
-
-    public double calcAccuracy(){
+    /*正解率の計算*/
+    public static double calcAccuracy(ArrayList<MyTriangle> triangles){
 
         int accuracy = 0;
         int sum = 0;
-        searchNextTriangles();
-        for(MyTriangle triangleI: this.triangles){
-            for(MyTriangle triangleJ : this.triangles){
+        searchNextTriangles(triangles);
+        for(MyTriangle triangleI: triangles){
+            for(MyTriangle triangleJ : triangles){
                 if(!triangleI.equals(triangleJ) &&
                         triangleI.getNextTriangles().contains(triangleJ)) {
                     if (triangleI.getColor() != triangleJ.getColor()){
@@ -246,9 +218,11 @@ public class CreateFieldView extends View{
         return (float)accuracy / (float)sum;
     }
 
-    private void searchNextTriangles(){
-        for(MyTriangle searchedTriangle: this.triangles){
-            for(MyTriangle triangle : this.triangles){
+    //O(9*N^2) = O(N^2)
+    public static void searchNextTriangles(ArrayList<MyTriangle> triangles){
+
+        for(MyTriangle searchedTriangle: triangles){
+            for(MyTriangle triangle : triangles){
                 for(MyLine searchedLine : searchedTriangle.getIncludedLines()){ //iteration : 3
                     for(MyLine line : triangle.getIncludedLines()){ //iteration : 3
                         if(line.equals(searchedLine) && !searchedTriangle.equals(triangle)){
@@ -260,129 +234,34 @@ public class CreateFieldView extends View{
         }
     }
 
+    public static void mappingTrianglesToSpinGlassField(int siteNum, ArrayList<MyTriangle> triangles){
 
-    /* -----------for custom input ( failed ) -----------
-    @Override
-    public boolean performClick() {
-        super.performClick();
-        return true;
-    }
-
-
-    //タッチに対するイベントハンドラ
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        MyPointF currentPoint = new MyPointF(event.getX(), event.getY());
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                dragCurrent = currentPoint;
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-                createField();
-                points.add(currentPoint);
-                invalidate();
-                dragCurrent = null;
-                performClick();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                dragCurrent = currentPoint;
-                invalidate();
-                break;
-        }
-
-        return true;
-    }
-
-    //register line and triangle to list
-    private void registerLineAndTriangle(MyPointF currentPoint) {
-        Map<Double, MyLine> distMap = new HashMap<>();
-        MyLine minLine = new MyLine();
-        MyLine line1 = new MyLine();
-        MyLine line2 = new MyLine();
-
-        if (this.lines.isEmpty()) {
-            assert this.points.size() == 1;
-            MyLine line = new MyLine(currentPoint, this.points.get(0));
-            lines.add(line);
-        } else {
-            int iteration_num = 3;
-            distMap = createDistMap(currentPoint);
-            Object[] mapKeys = distMap.keySet().toArray(); //参照を取得
-            Arrays.sort(mapKeys);
-
-            for (Double key : distMap.keySet()) {
-                minLine = distMap.get(key);
-                line1 = new MyLine(currentPoint, minLine.getPoint1());
-                line2 = new MyLine(currentPoint, minLine.getPoint2());
-
-                if (!isCrossLineExist(line1) && !isCrossLineExist(line2)) {
-                    //register new line to list
-                    this.lines.add(line1);
-                    this.lines.add(line2);
-
-                    //register new triangle to list
-                    MyTriangle newTriangle = new MyTriangle(
-                            currentPoint, minLine.getPoint1(), minLine.getPoint2()
-                    );
-                    this.triangles.add(newTriangle);
-
-                    //search triangle including minLine
-                    MyTriangle triangle = searchTriangleIncludeLine(minLine);
-
-                    //register triangle and newTriangle to nextTriangles each other
-                    if (triangle != null) {
-                        triangle.getNextTriangles().add(newTriangle);
-                        newTriangle.getNextTriangles().add(triangle);
-                    }
+        MyTriangle triangle;
+        for(int siteY = 0; siteY < siteNum; siteY++){
+            for(int siteX = 0; siteX < siteNum; siteX++){
+                if(siteY*siteNum + siteX < triangles.size()){
+                    triangle = triangles.get(siteY * siteNum + siteX);
+                    triangle.setSiteX(siteX + 1);
+                    triangle.setSiteY(siteY + 1);
                 }
-
-                counter = counter + 1;
-                if (counter == distMap.size()) {
-                    return;
-                }
-
             }
         }
     }
 
-    //search nearest line from current point
-    private Map<Double, MyLine> createDistMap(MyPointF currentPoint){
-        double dist;
-        double minDist = INF;
-        Map<Double,MyLine> distMap = new HashMap<>();
 
-        for(MyLine line : this.lines) {
-            dist = line.calcPointToLine(currentPoint);
-            distMap.put(dist, line);
-        }
+    /**
+     * getter and setter
+     */
 
-        return distMap;
+    public void setWidth(float width) { this.width = width; }
 
+    public void setHeight(float height) { this.height = height; }
+
+    public ArrayList<MyTriangle> getTriangles() { return this.triangles; }
+
+    public void setTriangles(ArrayList<MyTriangle> triangles) {
+        this.triangles = triangles;
+        invalidate();
     }
-
-    //search triangle including a line
-    private MyTriangle searchTriangleIncludeLine(MyLine line){
-
-        for(MyTriangle triangle : this.triangles){
-            if(triangle.isExistLine(line) == true){
-                return triangle;
-            }
-        }
-
-        return null;
-    }
-
-    private boolean isCrossLineExist(MyLine judgedLine){
-        for(MyLine line: this.lines){
-            if(judgedLine.isCross(line)){
-                return true;
-            }
-        }
-        return false;
-    }
-    */
-
 
 }

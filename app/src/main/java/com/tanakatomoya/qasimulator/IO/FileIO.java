@@ -2,68 +2,63 @@ package com.tanakatomoya.qasimulator.IO;
 
 import android.content.Context;
 
-import com.tanakatomoya.qasimulator.CreateModelActivity;
 import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
-import com.tanakatomoya.qasimulator.CreateFieldView;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
+
+import static java.lang.Math.abs;
+
 
 public class FileIO {
 
-    final private double EPS = 1e5;
+    private static double EPS = 1e-5;
 
     /**
      * fileName : データの読み書きに用いるファイル
      * customView : モデルを参照する先のビュー
      */
-    String fileNameOutput = "SG.csv";
-    String fileNameInput = "SGResult.csv";
-    CreateModelActivity activity;
 
-    public FileIO(CreateModelActivity activity){
-        this.activity = activity;
-    }
-
+    public static String fileNameOutput = "SG.csv";
+    public static String fileNameInput = "SGResult.csv";
 
     /**
-     * ネットワークからのデータの読み込み
+     * read from local file
      */
-    public void reader(int site_num){
+    public static void reader(Context context,int siteNum, ArrayList<MyTriangle> triangles){
 
         /*---------read from local file---------*/
         try {
-            FileInputStream fileStream = activity.openFileInput(fileNameInput);
+            System.out.println(context.getFilesDir().getPath());
+            FileInputStream fileStream = context.openFileInput(fileNameInput);
             BufferedReader br = new BufferedReader(new InputStreamReader(fileStream,"UTF-8"));
-            System.out.println("Loading...");
 
             String line;
-            List<MyTriangle> triangles = activity.getTriangles();
 
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
                 String[] data = line.split(",", -1);
                 //in fortran siteX = 1 ~ site_num , but in java siteX = 0 ~ site_num - 1
                 int siteX = Integer.parseInt(data[0]) - 1;
                 int siteY = Integer.parseInt(data[1]) - 1;
                 int color = Integer.parseInt(data[2]);
-                double spin = Double.parseDouble(data[3]);
+                int spin = Integer.parseInt(data[3]);
 
-                if (Math.abs(spin - 1.0) < EPS) {
-                    triangles.get(siteY * site_num + siteX).setColor(color);
+                //For Debug
+                /*
+                System.out.println(String.format(Locale.US,
+                        "%d %d %d %d", siteX, siteY, color, spin));
+                        */
+
+
+                if (spin == 1 && siteY*siteNum + siteX < triangles.size()) {
+                    triangles.get(siteY * siteNum + siteX).setColor(color);
                 }
             }
 
@@ -78,21 +73,18 @@ public class FileIO {
     }
 
     /**
-     * ファイルへのデータの書き込み
+     * write to local file
      */
 
-    public void writer(){
+    public static void writer(Context context, ArrayList<MyTriangle> triangles){
 
         try {
 
-
-            FileOutputStream fileStream = activity.openFileOutput(fileNameOutput,Context.MODE_PRIVATE);
+            System.out.println(context.getFilesDir().getPath());
+            FileOutputStream fileStream = context.openFileOutput(
+                     fileNameOutput, Context.MODE_PRIVATE);
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(fileStream,"UTF-8"));
 
-            //ファイルへのデータの書き込み
-            List<MyTriangle> triangles = activity.getTriangles();
-
-            System.out.println("Saving...");
             float JCoupling;
 
             for(MyTriangle triangleI : triangles){
@@ -106,23 +98,26 @@ public class FileIO {
                     if(!triangleI.equals(triangleJ)) {
 
                         pw.write(String.format(Locale.US,
-                                "%d,%d,%d,%d,%f",
+                                "%d,%d,%d,%d,%f\n",
                                 triangleI.getSiteX(),
                                 triangleI.getSiteY(),
                                 triangleJ.getSiteX(),
                                 triangleJ.getSiteY(),
                                 JCoupling
                         ));
-                        System.out.println(String.format(Locale.US,
-                                "%d,%d,%d,%d,%f",
-                                triangleI.getSiteX(),
-                                triangleI.getSiteY(),
-                                triangleJ.getSiteX(),
-                                triangleJ.getSiteY(),
-                                JCoupling
 
-                        ));
-
+                        //For Debug
+                        /*
+                        if(Math.abs(JCoupling - (-1)) < EPS){
+                            System.out.println(String.format(Locale.US,
+                                    "%d,%d,%d,%d,%f",
+                                    triangleI.getSiteX(),
+                                    triangleI.getSiteY(),
+                                    triangleJ.getSiteX(),
+                                    triangleJ.getSiteY(),
+                                    JCoupling));
+                        }
+                        */
                     }
                 }
             }
@@ -135,7 +130,4 @@ public class FileIO {
         }
     }
 
-    public String getFileNameOutput() {
-        return fileNameOutput;
-    }
 }

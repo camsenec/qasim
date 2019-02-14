@@ -52,6 +52,8 @@ public class MyTriangle implements Serializable{
         return centerPoint;
     }
 
+
+
     @Override
     public boolean equals(Object obj) {
         MyTriangle other = (MyTriangle)obj;
@@ -112,15 +114,5 @@ public class MyTriangle implements Serializable{
 
     public int getColor() { return color; }
 
-    /*
-    //judge if triangle include a line
-    public boolean isExistLine(MyLine line){
-        if((line.equals(this.line1) || line.equals(this.line2)) || line.equals(this.line3)){
-            return true;
-        }
-
-        return false;
-    }
-    */
 
 }

@@ -2,13 +2,19 @@
     <string name="app_name">QASimulator</string>
     <string name="action_settings">Settings</string>
     <string name="model_name">Model Name</string>
-    <string name="trotter_number">Number of slices</string>
+    <string name="trotter_number">Number of slices [default : 10]</string>
     <string name="site_number">Number of sites</string>
     <string name="register">register</string>
     <string name="create_field">Create Field</string>
     <string name="create_instance">Create Model</string>
+    <string name="show_result">Show Result</string>
     <string name="reset">RESET</string>
     <string name="load">LOAD</string>
     <string name="save">SAVE</string>
     <string name="solve">SOLVE</string>
+
+    <string name="start">START</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

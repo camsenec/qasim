@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.tanakatomoya.qasimulator.DrawableObject.MyLine;
 import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
@@ -19,9 +18,14 @@ import com.tanakatomoya.qasimulator.Retrofit.QASimulatorAPI;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,30 +38,30 @@ public class CreateModelActivity extends AppCompatActivity {
 
     String BASE_URL = "http://10.0.2.2:8000/QASimulator/";
 
+    public static final String EXTRA_DATA_RETURNED
+            = "com.example.tanakatomoya.QASimulator.EXTRA_RETURN";;
+
     ArrayList<MyTriangle> triangles;
-    private MyTriangle[][] triangles2D = new MyTriangle[100][100];
-    private int site_num;
+    private int siteNum;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
 
-        Gson gson = new Gson();
-
+        //receive list of triangles from MainActivity
         Intent intent = getIntent();
         triangles = (ArrayList<MyTriangle>)intent.getSerializableExtra(EXTRA_DATA);
-
-        site_num = (int)Math.sqrt(this.triangles.size()) + 1;
 
         final MaterialEditText text_name = findViewById(R.id.nameField);
         final MaterialEditText text_trotter = findViewById(R.id.trotterNumField);
         final Button btn_register = findViewById(R.id.btn_register);
 
-        System.out.println("size : " + triangles.size());
+
+        /*--------create Retrofit Client-------*/
 
         //Build Retrofit
-        OkHttpClient client = new OkHttpClient();
+        final OkHttpClient client = new OkHttpClient();
 
         Retrofit retro = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -70,6 +74,9 @@ public class CreateModelActivity extends AppCompatActivity {
         final QASimulatorAPI service = retro.create(QASimulatorAPI.class);
 
 
+        /*--------set button for POST-------*/
+
+
         //set onclick listener
         btn_register.setOnClickListener(new View.OnClickListener(){
 
@@ -77,88 +84,144 @@ public class CreateModelActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-        if(TextUtils.isEmpty(text_name.getText().toString())){
-            Toast.makeText(CreateModelActivity.this,
-                    "Please enter your model name", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(TextUtils.isEmpty(text_trotter.getText().toString())) {
-            Toast.makeText(CreateModelActivity.this,
-                    "Please enter number of slices", Toast.LENGTH_SHORT).show();
-            return;
-        }
+                if(TextUtils.isEmpty(text_name.getText().toString())){
+                    Toast.makeText(CreateModelActivity.this,
+                            "Please enter your model name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(TextUtils.isEmpty(text_trotter.getText().toString())) {
+                    Toast.makeText(CreateModelActivity.this,
+                            "Please enter number of slices", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
 
-        //convert trotter_num to String(2nd param)
-        String trotter_num = text_trotter.getText().toString();
+                /*--------create POST data(trotterNum, siteNum)-------*/
+                //get trotterNum for POST
+                String trotterNum = text_trotter.getText().toString();
+                //get siteNum for POST
+                siteNum = (int)Math.sqrt(triangles.size()) + 1;
 
-        //create spinGlassField and read file(4th param)
-        searchNextTriangles();
-        mappingTrianglesToSpinGlassField();
+                //Debug
+                System.out.println("name : " + text_name.getText().toString());
+                System.out.println("trotter_num : " + trotterNum);
+                System.out.println("site_num : " + siteNum);
 
-        System.out.println("write");
-        FileIO fileFactory = new FileIO(CreateModelActivity.this);
-        fileFactory.writer();
-        String fileName = "SG.csv";
-        File file = new File(fileName);
+                /*--------create POST data(spinGlassField)-------*/
+                final SpotsDialog waitingDialog = new SpotsDialog(
+                        CreateModelActivity.this);
+                waitingDialog.show();
+                waitingDialog.setMessage("creating data...");
 
-        //Debug
-        System.out.println("name : " + text_name.getText().toString());
-        System.out.println("trotter_num : " + trotter_num);
+                //convert triangles into SpinGlassField
+                searchNextTriangles();
+                mappingTrianglesToSpinGlassField();
+
+                //create file for POST using created SpinGlassField
+                System.out.println("write to file");
+                final FileIO fileFactory = new FileIO(CreateModelActivity.this);
+                fileFactory.writer();
+
+                waitingDialog.dismiss();
+
+                /*------create request body------*/
+                RequestBody nameBody = RequestBody.create(MediaType.parse("text/plain"),
+                        text_name.getText().toString());
+                RequestBody trotterNumBody = RequestBody.create(MediaType.parse("text/plain"),
+                        trotterNum);
+                RequestBody siteNumBody = RequestBody.create(MediaType.parse("text/plain"),
+                        String.valueOf(siteNum));
+                RequestBody resultBody = RequestBody.create(MediaType.parse("text/plain"),
+                        "0");
+                File file = new File(fileFactory.getFileNameOutput());
+                RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"),
+                        file);
+
+                /*
+                MultipartBody.Part namePart = MultipartBody.Part.createFormData(
+                        "name", text_name.getText().toString());
+
+                MultipartBody.Part trotterNumPart = MultipartBody.Part.createFormData(
+                        "trotter_num", trotterNum);
+
+                MultipartBody.Part siteNumPart = MultipartBody.Part.createFormData(
+                        "site_num",String.valueOf(siteNum));
+
+                MultipartBody.Part resultPart = MultipartBody.Part.createFormData(
+                        "result", "0");
+                */
+
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData(
+                        "data", file.getName(), fileBody);
+
+                //inform user that data is sent
+                Toast.makeText(CreateModelActivity.this,
+                        "Your data is sent! Please wait until result is displayed"
+                         , Toast.LENGTH_LONG);
 
 
-        final SpotsDialog waitingDialog = new SpotsDialog(CreateModelActivity.this);
-        waitingDialog.show();
-        waitingDialog.setMessage("Please waiting");
+                /*-------POST and get Response------*/
+                Call<SpinGlassModel> call = service.createSpinGlassModel(
+                        nameBody,
+                        trotterNumBody,
+                        siteNumBody,
+                        resultBody,
+                        filePart);
+
+                call.enqueue(new Callback<SpinGlassModel>(){
+                    @Override
+                    public void onResponse(Call<SpinGlassModel> call,
+                                           Response<SpinGlassModel> response) {
+
+                        Log.d("response", "get response");
+                        SpinGlassModel result = response.body();
+
+                        /*
+                        final SpotsDialog waitingDialog = new SpotsDialog(
+                                CreateModelActivity.this);
+
+                        //show dialog
+                        waitingDialog.show();
+                        waitingDialog.setMessage("Loading file...");
 
 
-        //register to database(name,site_num,trotter_num,result,file) as multipart/form-data
-        service.createSpinGlassModel(text_name.getText().toString(),
-            Integer.parseInt(trotter_num),
-            site_num,
-            0,
-            file)
-            .enqueue(new Callback<SpinGlassModel>(){
-                @Override
-                public void onResponse(Call<SpinGlassModel> call,
-                                       Response<SpinGlassModel> response) {
-                    //waitingDialog.dismiss();
-                    SpinGlassModel spinGLassField = response.body();
-                    Log.d("response", "get response");
+                        //file read
+                        String resultUrl = result.getResultUrl();
 
+                        if(resultUrl != null) {
+                          fileFactory.reader(siteNum, "SGResult.csv");
+                        }
 
-                    if(TextUtils.isEmpty(spinGLassField.getError_msg())){
-                        Toast.makeText(CreateModelActivity.this,
-                                "Success!", Toast.LENGTH_SHORT);
+                        waitingDialog.dismiss();
+
+                        Intent intent = new Intent(CreateModelActivity.this,
+                                MainActivity.class);
+                        intent.putExtra(EXTRA_DATA_RETURNED, triangles);
+                        startActivity(intent);
+                        */
 
                     }
 
+                    @Override
+                    public void onFailure(Call<SpinGlassModel> call, Throwable t) {
+                        Toast.makeText(CreateModelActivity.this,
+                                "sorry. error is occurred"
+                                , Toast.LENGTH_SHORT);
 
-                }
-
-                @Override
-                public void onFailure(Call<SpinGlassModel> call, Throwable t) {
-                    //waitingDialog.dismiss();
-                    Log.d("error",t.getMessage());
-
-                }
-            });
-
-
+                    }
+                });
             }
         });
-
     }
 
     private void mappingTrianglesToSpinGlassField(){
         MyTriangle triangle;
-        for(int siteY = 0; siteY < site_num; siteY++){
-            for(int siteX = 0; siteX < site_num; siteX++){
-                if(siteY*site_num + siteX < triangles.size()){
-                    triangle = triangles.get(siteY * site_num + siteX);
+        for(int siteY = 0; siteY < siteNum; siteY++){
+            for(int siteX = 0; siteX < siteNum; siteX++){
+                if(siteY*siteNum + siteX < triangles.size()){
+                    triangle = triangles.get(siteY * siteNum + siteX);
                     triangle.setSiteX(siteX + 1);
                     triangle.setSiteY(siteY + 1);
-                    triangles2D[siteX + 1][siteY + 1] = triangle;
                     System.out.println(triangle);
                 }
             }
@@ -180,11 +243,15 @@ public class CreateModelActivity extends AppCompatActivity {
         }
     }
 
-    public MyTriangle[][] getTriangles2D() {
-        return triangles2D;
-    }
+    /**
+     * getter and setter
+     */
 
     public ArrayList<MyTriangle> getTriangles() {
         return triangles;
+    }
+
+    public int getSiteNum() {
+        return siteNum;
     }
 }

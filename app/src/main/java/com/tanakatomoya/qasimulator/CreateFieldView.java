@@ -28,7 +28,7 @@ public class CreateFieldView extends View{
      */
 
     private ArrayList<MyTriangle> triangles = new ArrayList<>();
-    private int iteration_num = 3;
+    private int iteration_num = 2;
 
     /**
      * params(paint)
@@ -61,10 +61,9 @@ public class CreateFieldView extends View{
         super(context ,attrs);
         paintOfPoint = new Paint();
         paintOfLine = new Paint();
-        path = new Path();
         paintOfLine.setStrokeWidth(5);
         paintOfLine.setARGB(255, 50, 90, 255);
-        paintOfPoint.setColor(Color.BLUE);
+        paintOfPoint.setColor(Color.BLACK);
     }
 
     /**
@@ -74,48 +73,52 @@ public class CreateFieldView extends View{
     @Override
     protected void onDraw(Canvas canvas) {
 
-
-        if(this.completeFlag == 0) {
-            for (MyTriangle triangle : this.triangles) {
-                for (MyLine line : triangle.getIncludedLines()) {
-                    canvas.drawLine(line.getPoint1().getX(), line.getPoint1().getY(),
-                            line.getPoint2().getX(), line.getPoint2().getY(), paintOfLine);
-                }
-
-                for(MyPointF point : triangle.getIncludedPoints()){
-                    canvas.drawCircle(point.getX(), point.getY(), radius, paintOfPoint);
-                }
+        for (MyTriangle triangle : this.triangles) {
+            path = new Path();
+            switch(triangle.getColor()){
+                case 1:
+                    paintOfLine.setColor(Color.BLUE);
+                    break;
+                case 2:
+                    paintOfLine.setColor(Color.GREEN);
+                    break;
+                case 3:
+                    paintOfLine.setColor(Color.RED);
+                    break;
+                case 4:
+                    paintOfLine.setColor(Color.YELLOW);
+                    break;
+                default:
+                    paintOfLine.setColor(Color.WHITE);
+                    break;
             }
-        }else{
-            for (MyTriangle triangle : this.triangles) {
-                switch(triangle.getColor()){
-                    case 1:
-                        paintOfLine.setColor(Color.BLUE);
-                        break;
-                    case 2:
-                        paintOfLine.setColor(Color.GREEN);
-                        break;
-                    case 3:
-                        paintOfLine.setColor(Color.RED);
-                        break;
-                    case 4:
-                        paintOfLine.setColor(Color.YELLOW);
-                        break;
-                    default:
-                        paintOfLine.setColor(Color.WHITE);
-                        break;
-                }
-                path.moveTo(triangle.getPoint1().getX(), triangle.getPoint1().getY());
-                path.lineTo(triangle.getPoint2().getX(), triangle.getPoint2().getY());
-                path.lineTo(triangle.getPoint3().getX(), triangle.getPoint3().getY());
-                path.lineTo(triangle.getPoint1().getX(), triangle.getPoint1().getY());
-                canvas.drawPath(path, paintOfLine);
+            path.moveTo(triangle.getPoint1().getX(), triangle.getPoint1().getY());
+            path.lineTo(triangle.getPoint2().getX(), triangle.getPoint2().getY());
+            path.lineTo(triangle.getPoint3().getX(), triangle.getPoint3().getY());
+            path.lineTo(triangle.getPoint1().getX(), triangle.getPoint1().getY());
+            canvas.drawPath(path, paintOfLine);
+        }
+
+        paintOfLine.setColor(Color.BLACK);
+        paintOfPoint.setColor(Color.BLACK);
+
+        for (MyTriangle triangle : this.triangles) {
+            for (MyLine line : triangle.getIncludedLines()) {
+                canvas.drawLine(line.getPoint1().getX(), line.getPoint1().getY(),
+                        line.getPoint2().getX(), line.getPoint2().getY(), paintOfLine);
             }
 
+            for(MyPointF point : triangle.getIncludedPoints()){
+                canvas.drawCircle(point.getX(), point.getY(), radius, paintOfPoint);
+            }
         }
 
     }
 
+    /**
+     * 塗りつぶす三角形を生成
+     * used : initializeField(), createFractal()
+     */
     public void createField(){
         initializeField();
         for(int i = 0 ; i < this.iteration_num; i++){
@@ -124,6 +127,7 @@ public class CreateFieldView extends View{
         }
     }
 
+    //windowの角のうちの2点と中央を頂点とする, 4つの三角形を生成
     private void initializeField(){
         triangles.clear();
 
@@ -149,6 +153,7 @@ public class CreateFieldView extends View{
         triangles.add(triangle4);
     }
 
+    //フラクタルを生成
     private void createFractal(){
         ArrayList<MyTriangle> tmpTriangles = new ArrayList<>();
 
@@ -174,6 +179,7 @@ public class CreateFieldView extends View{
 
     }
 
+    //windowサイズを取得
     public static MyPointF getViewSize(View View){
         MyPointF point = new MyPointF(View.getWidth(), View.getHeight());
         return point;
@@ -197,7 +203,15 @@ public class CreateFieldView extends View{
 
     public void setHeight(float height) { this.height = height; }
 
-    public ArrayList<MyTriangle> getTriangles() { return triangles; }
+    public ArrayList<MyTriangle> getTriangles() {
+        System.out.println("inneersize"  + triangles.size());
+        return this.triangles;
+    }
+
+    public void setTriangles(ArrayList<MyTriangle> triangles) {
+        this.triangles = triangles;
+        invalidate();
+    }
 
     public void setCompleteFlag(int completeFlag) { this.completeFlag = completeFlag;}
 
@@ -210,7 +224,44 @@ public class CreateFieldView extends View{
      * searchTriangleIncludingLine
      */
 
-    /* -----------for custom input-----------
+    public double calcAccuracy(){
+
+        int accuracy = 0;
+        int sum = 0;
+        searchNextTriangles();
+        for(MyTriangle triangleI: this.triangles){
+            for(MyTriangle triangleJ : this.triangles){
+                if(!triangleI.equals(triangleJ) &&
+                        triangleI.getNextTriangles().contains(triangleJ)) {
+                    if (triangleI.getColor() != triangleJ.getColor()){
+                        accuracy = accuracy + 1;
+                    }
+                    sum = sum + 1;
+                }
+            }
+        }
+        System.out.println("accurate count: " + accuracy);
+        System.out.println("sum : " + sum);
+        System.out.println("accuracy" + (float)accuracy / (float)sum);
+        return (float)accuracy / (float)sum;
+    }
+
+    private void searchNextTriangles(){
+        for(MyTriangle searchedTriangle: this.triangles){
+            for(MyTriangle triangle : this.triangles){
+                for(MyLine searchedLine : searchedTriangle.getIncludedLines()){ //iteration : 3
+                    for(MyLine line : triangle.getIncludedLines()){ //iteration : 3
+                        if(line.equals(searchedLine) && !searchedTriangle.equals(triangle)){
+                            searchedTriangle.getNextTriangles().add(triangle);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    /* -----------for custom input ( failed ) -----------
     @Override
     public boolean performClick() {
         super.performClick();

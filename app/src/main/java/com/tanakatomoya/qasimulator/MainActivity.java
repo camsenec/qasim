@@ -11,18 +11,28 @@ import android.view.MenuItem;
 
 import com.tanakatomoya.qasimulator.DrawableObject.MyPointF;
 import com.tanakatomoya.qasimulator.DrawableObject.MyTriangle;
+import com.tanakatomoya.qasimulator.IO.FileIO;
+import com.tanakatomoya.qasimulator.IO.NetworkIO;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tanakatomoya.qasimulator.CreateModelActivity.EXTRA_DATA_RETURNED;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String EXTRA_DATA
-            = "com.example.tanakatomoya.QASimulator.EXTRA_DATA";;
+            = "com.example.tanakatomoya.QASimulator.EXTRA_DATA";
+
+    ArrayList<MyTriangle> triangles;
+    int flag = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,8 +62,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void reset(View view){
         CreateFieldView v = findViewById(R.id.createFieldView);
-        v.reset();
+        ArrayList<MyTriangle> triangles = v.getTriangles();
+        this.setTriangles(triangles);
+        try {
+            new NetworkIO(MainActivity.this)
+                    .execute(new URL("http://10.0.2.2:8000/data/SGResult.csv"));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     public void createField(View view){
         CreateFieldView v = findViewById(R.id.createFieldView);
@@ -62,11 +81,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void createQASimulatorInstance(View view){
         // Do something in response to button
-        Intent intent = new Intent(MainActivity.this, CreateModelActivity.class);
+        //Intent intent = new Intent(MainActivity.this, CreateModelActivity.class);
         CreateFieldView v = findViewById(R.id.createFieldView);
-        ArrayList<MyTriangle> triangles = v.getTriangles();
-        intent.putExtra(EXTRA_DATA, triangles);
-        startActivity(intent);
+        //ArrayList<MyTriangle> triangles = v.getTriangles();
+        v.setTriangles(this.triangles);
+        v.setCompleteFlag(1);
+        v.calcAccuracy();
+        //intent.putExtra(EXTRA_DATA, triangles);
+        //startActivity(intent);
     }
 
     @Override
@@ -77,5 +99,13 @@ public class MainActivity extends AppCompatActivity {
 
         r.setWidth(view.getX());
         r.setHeight(view.getY());
+    }
+
+    public ArrayList<MyTriangle> getTriangles() {
+        return triangles;
+    }
+
+    public void setTriangles(ArrayList<MyTriangle> triangles) {
+        this.triangles = triangles;
     }
 }

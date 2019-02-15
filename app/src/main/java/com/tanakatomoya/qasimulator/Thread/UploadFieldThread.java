@@ -122,7 +122,7 @@ public class UploadFieldThread extends AsyncTask<Void, Void, Boolean> {
                         new DownLoadFieldThread(activity, Integer.parseInt(siteNum), iterationNum);
                 try {
                     downloadFieldThread.execute(
-                            new URL("http://10.0.2.2:8000/data/SGResult.csv"));
+                            new URL(CreateModelActivity.BASE_URL + "data/SGResult.csv"));
                 }catch(MalformedURLException e) {
                     e.printStackTrace();
                 }

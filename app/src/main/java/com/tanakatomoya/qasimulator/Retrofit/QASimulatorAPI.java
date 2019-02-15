@@ -12,7 +12,7 @@ import retrofit2.http.Part;
 //multipart/form-data形式でPOST
 public interface QASimulatorAPI {
     @Multipart
-    @POST("solve/")
+    @POST("QASimulator/solve/")
     Call<SpinGlassModel> createSpinGlassModel(@Part("name") RequestBody name,
                                               @Part("trotter_num") RequestBody trotter_num,
                                               @Part("site_num") RequestBody site_num,

@@ -43,7 +43,7 @@ Android7.0(API24)
     5. run  
 
 ## Server side
-construct using Django REST_Framework on Amazon EC2
+constructed by Django with Django REST_Framework on Amazon EC2
 
 ## Program Structure
 

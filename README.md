@@ -23,15 +23,15 @@
 「SHOW RESULT」ボタンを押すと, 作成した図形を彩色した結果が表示されます.    
 このとき, 正解率がポップアップで表示されます.
 
-## ユースケース
+## Use Case
 
 ![usecase](https://user-images.githubusercontent.com/27656483/52901458-15200e80-3247-11e9-802a-04a6d83efcab.png)
 
-## アクティビティ遷移
+## Activity Transition
 
 ![snip20190217_31](https://user-images.githubusercontent.com/27656483/52901500-b7d88d00-3247-11e9-9d11-2d66de7fcf11.png)
 
-## システム要件
+## System Requirements
 Android7.0(API24)
 
 ## Usage[on Mac]
@@ -44,6 +44,23 @@ Android7.0(API24)
 
 ## Server side
 construct using Django REST_Framework on Amazon EC2
+
+## Program Structure
+
+      com.tanakatomoya.qasimulator--+Activity(Class for activity. It is shown in section of 「アクティビティ遷移」
+                                    |                                    
+                                    +--DrawableObject(Objects drawn on View/FieldView)
+                                    |
+                                    +--IO (FileIO)
+                                    |
+                                    +--Model (SpinGlassFieldModel)
+                                    |
+                                    +--Retrofit (API Interface)
+                                    |
+                                    +--Thread (Thread for Download and Upload. These are used in CreateModelActivity)
+                                    |
+                                    +--View (FieldView is contained. It is used in CreateFieldActivity and ResultActivity)
+
 
 ## Programing language
 - [FrontEnd] Java  

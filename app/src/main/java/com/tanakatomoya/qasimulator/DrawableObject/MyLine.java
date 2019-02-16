@@ -18,8 +18,7 @@ public class MyLine implements Serializable{
     //expression of line : c1*x + c2*y +c3 = 0
     public MyLine(MyPointF point1, MyPointF point2) {
         this.point1 = point1;
-        this.point2 = point2;
-        this.c1 = (point1.getY() - point2.getY()) / (point1.getX() - point2.getX());
+        this.point2 = point2;this.c1 = (point1.getY() - point2.getY()) / (point1.getX() - point2.getX());
         this.c2 = -1.0;
         this.c3 = point1.getY() - c1 * point1.getX();
     }

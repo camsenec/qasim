@@ -109,6 +109,9 @@ public class UploadFieldThread extends AsyncTask<Void, Void, Boolean> {
                 resultBody,
                 fileBody);
 
+        Toast.makeText(activity,
+                "Data is posted! Please wait until results are returned.", Toast.LENGTH_LONG).show();
+
 
         call.enqueue(new Callback<SpinGlassModel>() {
             @Override

@@ -11,7 +11,7 @@ import static java.lang.StrictMath.abs;
 
 public class MyPointF implements Serializable{
 
-    private final double EPS = 1e-5;
+    private final double EPS = 1e-3;
 
     private float x;
     private float y;
@@ -30,7 +30,7 @@ public class MyPointF implements Serializable{
         if(obj == null) return false;
 
         MyPointF other = (MyPointF)obj;
-        if(abs(x - other.getX()) < EPS && abs(y - other.getY()) < EPS){
+        if(Math.abs(x - other.getX()) < EPS && Math.abs(y - other.getY()) < EPS){
             return true;
         }
 

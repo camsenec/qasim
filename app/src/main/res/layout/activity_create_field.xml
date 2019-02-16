@@ -17,14 +17,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/reset_button"
-                    style="@style/Widget.AppCompat.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:onClick="onClickReset"
-                    android:text="@string/reset" />
 
                 <Button
                     android:id="@+id/main_button"
@@ -35,15 +27,30 @@
                     android:onClick="onClickCreateField"
                     android:text="@string/create_field" />
 
+
                 <Button
                     android:id="@+id/button"
                     style="@style/Widget.AppCompat.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:onClick="onClickCreateModel"
                     android:text="@string/create_instance"/>
+
+                <Button
+                    android:id="@+id/reset_button"
+                    style="@style/Widget.AppCompat.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="onClickReset"
+                    android:text="@string/reset" />
             </LinearLayout>
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
 
             <com.tanakatomoya.qasimulator.View.FieldView

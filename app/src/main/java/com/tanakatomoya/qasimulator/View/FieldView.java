@@ -221,12 +221,12 @@ public class FieldView extends View{
     //O(9*N^2) = O(N^2)
     public static void searchNextTriangles(ArrayList<MyTriangle> triangles){
 
-        for(MyTriangle searchedTriangle: triangles){
-            for(MyTriangle triangle : triangles){
-                for(MyLine searchedLine : searchedTriangle.getIncludedLines()){ //iteration : 3
-                    for(MyLine line : triangle.getIncludedLines()){ //iteration : 3
-                        if(line.equals(searchedLine) && !searchedTriangle.equals(triangle)){
-                            searchedTriangle.getNextTriangles().add(triangle);
+        for(MyTriangle triangleI: triangles){
+            for(MyTriangle triangleJ : triangles){
+                for(MyLine lineI : triangleI.getIncludedLines()){ //iteration : 3
+                    for(MyLine lineJ : triangleJ.getIncludedLines()){ //iteration : 3
+                        if(lineJ.equals(lineI) && !triangleI.equals(triangleJ)){
+                            triangleI.getNextTriangles().add(triangleJ);
                         }
                     }
                 }

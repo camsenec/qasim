@@ -60,7 +60,7 @@ public class MyTriangle implements Serializable{
 
         if((((point1.equals(other.getPoint1()) || point1.equals(other.getPoint2()))|| point1.equals(other.getPoint3()))
         &&(((point2.equals(other.getPoint1()) || point2.equals(other.getPoint2()))|| point2.equals(other.getPoint3()))))
-        &&((point2.equals(other.getPoint1()) || point2.equals(other.getPoint2() )|| point2.equals(other.getPoint3())))){
+        &&((point3.equals(other.getPoint1()) || point3.equals(other.getPoint2() )|| point3.equals(other.getPoint3())))){
             return true;
         }
         return false;

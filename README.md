@@ -51,7 +51,7 @@ construct using Django REST_Framework on Amazon EC2
 - [Solver]  Fortran2003
 
 ## Other git repository
-- [Server Side] https://github.com/thana-tos/QASimulator_Serverside
+- [Server Side] https://github.com/thana-tos/QASimulator_ServerSide
 - [Solver] https://github.com/thana-tos/QASimulator_Solver
 
 ## Author

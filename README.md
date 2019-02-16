@@ -47,7 +47,7 @@ construct using Django REST_Framework on Amazon EC2
 
 ## Program Structure
 
-      com.tanakatomoya.qasimulator--+Activity(Class for activity. It is shown in section of 「アクティビティ遷移」
+      com.tanakatomoya.qasimulator--+Activity(Class for activity. It is shown in section of Activity Transition
                                     |                                    
                                     +--DrawableObject(Objects drawn on View/FieldView)
                                     |

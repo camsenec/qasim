@@ -1,4 +1,4 @@
-# Quantum Annealing Emulator
+# Quantum Annealing Simulator
 ## Overview
 This application solves coloring problem with quantum annealing machine emulator
 

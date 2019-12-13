@@ -68,8 +68,8 @@ constructed by Django with Django REST_Framework on Amazon EC2
 - [Solver]  Fortran2003
 
 ## Other git repository
-- [Server Side] https://github.com/thana-tos/QASimulator_ServerSide
-- [Solver] https://github.com/thana-tos/QASimulator_Solver
+- [Server Side] https://github.com/thanatoth/QASimulator_ServerSide
+- [Solver] https://github.com/thanatoth/QASimulator_Solver
 
 ## Author
 Tomoya Tanaka

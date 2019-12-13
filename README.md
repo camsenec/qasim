@@ -1,8 +1,8 @@
-# Quantum Annealing Simulator
-## アプリの説明
-量子アニーリングマシンのシミュレーターを用いて, 彩色問題を解きます.    
+# Quantum Annealing Emulation
+## Overview
+This application solves coloring problem with quantum annealing machine emulator
 
-## 使い方
+## How to Use
 1. 彩色する図形の作成   
 まず, 「CREATE FIELD」ボタンの下にあるプルダウンでフラクタル生成の繰り返し数を選択します.   
 その後「CREATE FIELD」ボタンを押すと, 彩色するフラクタルの図形が作成されます.  

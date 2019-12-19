@@ -70,6 +70,7 @@ constructed by Django with Django REST_Framework on Amazon EC2
 ## Other git repository
 - [Server Side] https://github.com/thanatoth/QASimulator_ServerSide
 - [Solver] https://github.com/thanatoth/QASimulator_Solver
+- [Emulator] https://github.com/thanatoth/QuantumAnnealing
 
 ## Author
 Tomoya Tanaka

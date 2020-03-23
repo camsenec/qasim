@@ -3,29 +3,23 @@
 This application solves coloring problem with quantum annealing machine emulator
 
 ## How to Use
-1. 彩色する図形の作成   
-まず, 「CREATE FIELD」ボタンの下にあるプルダウンでフラクタル生成の繰り返し数を選択します.   
-その後「CREATE FIELD」ボタンを押すと, 彩色するフラクタルの図形が作成されます.  
-図形が作成できたら, 「CREATE MODEL」 ボタンを押して, モデルの作成に進みます.  
+1. Making Map to be colored  
+First, select the number of fractal generation repeats from the pull-down below the `CREATE FIELD` button.
+After that, press the `CREATE FIELD` button to create a fractal map to be colored.
+After the shape is created, press the `CREATE MODEL` button to proceed to quantum computer configuration
    
-2. 量子アニーリングマシンのモデルの作成   
-1つ目のフィールドにはモデルの名前を指定します.    
-モデルの名前は何でも構いません.   
-2つ目のフィールドにはスライス数を指定します.   
-スライス数は別名トロッター数とも呼ばれ, 量子状態での重ね合わせをいくつ与えるかを指します.   
-スライス数に10を指定すれば, 10個の重ね合わせが与えられます.     
-スライス数を大きくすれば, 理論的には最適性は向上しますが, 収束性能が悪くなります.     
-2つのフィールドに値を入力後, 「REGISTER」ボタンを押すと, 作成した図形がスピングラス模型に変換され, 
-サーバーで量子アニーリングマシンのシミュレータによる処理が行われます.   
+2. Configuration quantum annealing machine
+Specify the name of the model in the first field. The name of the model can be anything.
+Next, specify the number of slices in the second field.
+The number of slices, also known as the Trotter number, refers to how many quantum state are given.
+If you specify 10 for the number of slices, 10 quantum state will be given.
+Increasing the number of slices theoretically improves the optimality, but require more time. Recommended number is 10.
+After entering the values in the two fields and pressing the `REGISTER` button, the created figure in step 1 is converted to a spin glass model which can be processed with configured quantum annealing machine.
 
-3. 結果の表示   
-シミュレーターでの処理が完了したら, 画面が遷移します.   
-「SHOW RESULT」ボタンを押すと, 作成した図形を彩色した結果が表示されます.    
-このとき, 正解率がポップアップで表示されます.
-
-## Use Case
-
-![usecase](https://user-images.githubusercontent.com/27656483/52901458-15200e80-3247-11e9-802a-04a6d83efcab.png)
+3. Visualizing Result
+When the processing in the simulator is completed, the screen changes.
+Click the `SHOW RESULT` button to display the result of coloring the created figure.
+At this time, the accuracy rate will be displayed in a pop-up.
 
 ## Activity Transition
 
@@ -35,12 +29,14 @@ This application solves coloring problem with quantum annealing machine emulator
 Android7.0(API24)
 
 ## Usage[on Mac]
+Android Studio should be installed before use.
 
-    1. open with AndroidStudio
-    2. cd /User/<your_name>/Library/Android/sdk/emulator
-    3. ./emulator -list-avds
-    4. ./emulator -avd <your_device_name> -dns-server 8.8.8.8
-    5. run  
+    1. https://github.com/thanatoth/QASimulator.git
+    2. open -a Android\ Studio.app QASimulator 
+    3. /Users/$USER/Library/Android/sdk/emulator/emulator -avd NEXUS_5X_API_28 -dns-server 8.8.8.8 
+       ※NEXUS_5X_API_28 should be installed before step 3. 
+       ※you can replace NEXUS_5X_API_28 to another device
+    4. run with Android Studio
 
 ## Server side
 constructed by Django with Django REST_Framework on Amazon EC2

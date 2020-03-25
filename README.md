@@ -23,7 +23,7 @@ At this time, the accuracy rate will be displayed in a pop-up.
 
 ## Activity Transition
 
-![snip20190217_31](https://user-images.githubusercontent.com/27656483/52901500-b7d88d00-3247-11e9-9d11-2d66de7fcf11.png)
+![screen](https://user-images.githubusercontent.com/27656483/77525374-477d5000-6ecc-11ea-8a28-1931f52c3e19.png)
 
 ## System Requirements
 Android7.0(API24)

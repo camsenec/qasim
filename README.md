@@ -1,4 +1,4 @@
-# Solve Coloring Problem with Quantum Annealing
+# Coloring Problem with Quantum Annealing
 ## Overview
 This application solves coloring problem with quantum annealing machine emulator
 

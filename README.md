@@ -21,26 +21,6 @@ When the processing in the simulator is completed, the screen changes.
 Click the `SHOW RESULT` button to display the result of coloring the created figure.
 At this time, the accuracy rate will be displayed in a pop-up.
 
-## Activity Transition
-
-![screen](https://user-images.githubusercontent.com/27656483/77525374-477d5000-6ecc-11ea-8a28-1931f52c3e19.png)
-
-## System Requirements
-Android7.0(API24)
-
-## Usage[on Mac]
-Android Studio should be installed before use.
-
-    1. https://github.com/thanatoth/QASimulator.git
-    2. open -a Android\ Studio.app QASimulator 
-    3. /Users/$USER/Library/Android/sdk/emulator/emulator -avd NEXUS_5X_API_28 -dns-server 8.8.8.8 
-       ※NEXUS_5X_API_28 should be installed before step 3. 
-       ※you can replace NEXUS_5X_API_28 to another device
-    4. run with Android Studio
-
-## Server side
-constructed by Django with Django REST_Framework on Amazon EC2
-
 ## Program Structure
 
       com.tanakatomoya.qasimulator--+Activity(Class for activity. It is shown in section of Activity Transition
@@ -64,9 +44,9 @@ constructed by Django with Django REST_Framework on Amazon EC2
 - [Solver]  Fortran2003
 
 ## Other git repository
-- [Server Side] https://github.com/thanatoth/QASimulator_ServerSide
-- [Solver] https://github.com/thanatoth/QASimulator_Solver
-- [Emulator] https://github.com/thanatoth/QuantumAnnealing
+- [Server Side] https://github.com/camsenec/qasim-server
+- [Solver] https://github.com/camsenec/qasim-solver
+- [Emulator] https://github.com/camsenec/qa-emulator
 
 ## Author
 Tomoya Tanaka

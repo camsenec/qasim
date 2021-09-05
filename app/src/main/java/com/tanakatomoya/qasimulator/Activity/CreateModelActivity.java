@@ -26,8 +26,8 @@ import static com.tanakatomoya.qasimulator.Activity.CreateFieldActivity.EXTRA_DA
 
 public class CreateModelActivity extends AppCompatActivity {
 
-    //String BASE_URL = "http://10.0.2.2:8000/QASimulator/";
-    public static String BASE_URL = "http://54.95.61.149/";
+    public static String BASE_URL = "http://10.0.2.2:8000/";
+    //public static String BASE_URL = "http://54.95.61.149/";
 
     public static final String EXTRA_DATA_SITE
             = "com.example.tanakatomoya.QASimulator.EXTRA_SITE";

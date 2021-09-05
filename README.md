@@ -21,6 +21,11 @@ When the processing in the simulator is completed, the screen changes.
 Click the `SHOW RESULT` button to display the result of coloring the created figure.
 At this time, the accuracy rate will be displayed in a pop-up.
 
+## Activity Transition
+
+![screen](https://user-images.githubusercontent.com/27656483/77525374-477d5000-6ecc-11ea-8a28-1931f52c3e19.png)
+
+
 ## Program Structure
 
       com.tanakatomoya.qasimulator--+Activity(Class for activity. It is shown in section of Activity Transition
